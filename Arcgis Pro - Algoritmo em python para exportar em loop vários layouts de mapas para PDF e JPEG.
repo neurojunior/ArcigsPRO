@@ -1,0 +1,71 @@
+## Importar as bibliotecas necessárias
+
+import os
+import arcpy
+import time
+
+# Caminho do projeto ArcGIS Pro (.aprx)
+
+arquivo_aprx = r"C:\PY\Projeto\Projeto.aprx"
+
+# Diretório onde os arquivos JPEG serão salvos
+
+pasta_jpeg = r"C:\PY\IMG"
+
+# Diretório onde os arquivos PDF serão salvos
+
+pasta_pdf = r"C:\PY\PDF"
+
+## Exportar os layouts para imagens (JPEG)
+# Carrega o projeto e obtém a lista de layouts
+projeto = arcpy.mp.ArcGISProject(arquivo_aprx)
+layouts = projeto.listLayouts()
+
+# Define as opções de exportação para JPEG
+dpi = 500
+jpeg_quality = 100 # Valores entre 0 e 100, sendo 100 a melhor qualidade
+
+# Registra o tempo inicial
+inicio = time.time()
+
+# Itera sobre os layouts, exportando cada um para um arquivo JPEG
+for layout in layouts:
+   nome_jpeg = f"{layout.name}.jpeg"
+   caminho_jpeg = os.path.join(pasta_jpeg, nome_jpeg)
+   print(f"Exportando {layout.name} para {caminho_jpeg}")
+   layout.exportToJPEG(caminho_jpeg, resolution=dpi, jpeg_quality=jpeg_quality)
+
+# Registra o tempo final e calcula o tempo gasto
+fim = time.time()
+tempo_gasto = fim - inicio
+
+print("Todos os layouts foram exportados com sucesso.")
+print(f"Tempo gasto: {tempo_gasto:.2f} segundos.")
+
+## Exportar os layouts em loop para PDF
+
+# Registra o tempo inicial
+inicio = time.time()
+
+# Carrega o projeto e obtém a lista de layouts
+projeto = arcpy.mp.ArcGISProject(arquivo_aprx)
+layouts = projeto.listLayouts()
+
+# Define as opções de exportação para PDF
+dpi = 2000
+pdf_layers = 2
+pdf_quality = 5
+
+# Itera sobre os layouts, exportando cada um para um arquivo PDF
+for layout in layouts:
+   nome_pdf = f"{layout.name}.pdf"
+   caminho_pdf = os.path.join(pasta_pdf, nome_pdf)
+   print(f"Exportando {layout.name} para {caminho_pdf}")
+   layout.exportToPDF(caminho_pdf, resolution=dpi, layers_attributes=pdf_layers, image_quality=pdf_quality)
+
+# Registra o tempo final e calcula o tempo gasto
+fim = time.time()
+tempo_gasto = fim - inicio
+
+print("Todos os layouts foram exportados com sucesso.")
+print(f"Tempo gasto: {tempo_gasto:.2f} segundos.").
